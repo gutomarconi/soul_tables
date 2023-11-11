@@ -1,0 +1,27 @@
+{
+  "pedido": {
+    "data_pedido": "11/11/2023",
+    "cliente": {
+      "codigo": "752827664",
+      "nome": "Mesa 1" 
+    },
+    "itens": [
+      {
+        "item": {
+          "codigo": "768230319",
+          "descricao": "biscone",
+          "quantidade": "1",
+          "valor_unitario": "15"
+        }
+      }
+    ],
+    "marcadores": [
+      {
+        "marcador": {
+          "descricao": "Espera PDV"
+        }
+      }
+    ],
+    "situacao": "Aberto"
+  }
+}

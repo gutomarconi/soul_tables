@@ -1,0 +1,63 @@
+{
+  "name": "tables",
+  "version": "1.0.0",
+  "description": "Tables",
+  "main": "dist/index.esm.js",
+  "scripts": {
+    "test": "npm run test",
+    "build": "rimraf build && node esbuild.js",
+    "build:serve": "rimraf build && node esbuild.js --serve",
+    "dev": "run-p build:serve"
+  },
+  "keywords": [
+    "tiny",
+    "soul",
+    "tables"
+  ],
+  "author": "Gustavo Marconi",
+  "license": "ISC",
+  "engines": {
+    "node": "20.9.0"
+  },
+  "dependencies": {
+    "-": "^0.0.1",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.16",
+    "@mui/material": "^5.14.16",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.4",
+    "@types/dotenv": "^8.2.0",
+    "@types/jwt-decode": "^3.1.0",
+    "@types/react-router-dom": "5.3.3",
+    "@typescript-eslint/parser": "^6.9.1",
+    "axios": "^1.6.0",
+    "commander": "^11.1.0",
+    "dotenv": "^16.3.1",
+    "esbuild": "^0.19.5",
+    "esbuild-node-externals": "^1.9.0",
+    "esbuild-plugin-inline-image": "^0.0.9",
+    "fs-extra": "^11.1.1",
+    "http-proxy-middleware": "^2.0.6",
+    "jwt-decode": "^4.0.0",
+    "node-html-parser": "^6.1.11",
+    "npm-run-all": "^4.1.5",
+    "oidc-client-ts": "2.1.0",
+    "oidc-react": "2.0.3",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-hooks": "^1.0.1",
+    "react-router-dom": "5.3.3",
+    "run-p": "^0.0.0",
+    "save-dev": "^0.0.1-security",
+    "styled-components": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.1",
+    "rimraf": "5.0.5",
+    "typescript": "^5"
+  }
+}
