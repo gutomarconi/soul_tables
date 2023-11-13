@@ -5,9 +5,9 @@ import { OrderForm } from '../commons/OrderForm';
 
 export const NewOrderContainer: FC = () => {
   useEffect(() => {
-    // (async () => {
-    //   await fetchItems(TagIds.Food);
-    // })();
+    (async () => {
+      await fetchItems(TagIds.Food);
+    })();
   }, []);
 
   return (
