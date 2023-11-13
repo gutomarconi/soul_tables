@@ -7,7 +7,11 @@ export const fetchItems = async (idTag: TagIds) => {
   const productApi = 'produtos.pesquisa.php';
   const url = `${baseDomain}${productApi}?formato=json&token=${token}&idTag=${idTag}`;
 
-  const { data } = await axios.post(url);
+  const { data } = await axios.post(url, undefined, { 
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    }
+  });
 
   console.log(data);
 
