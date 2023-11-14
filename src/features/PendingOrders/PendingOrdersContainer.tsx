@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Container, NoDataContainer, TablesContainer } from './PendingOrdersContainer.styled';
+import { Container, TablesContainer } from './PendingOrdersContainer.styled';
 import { Card } from './components/Card';
 import { fetchOrders } from '../../api/orders';
 import { IPendingOrders } from '../../types/types';

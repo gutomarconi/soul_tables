@@ -1,12 +1,11 @@
 import { FormControl, FormGroup, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import React, { FC, useEffect, useState } from 'react';
 import { ItemsList } from '../ItemsList';
-import { Container, GroupLabel, ItemsWrapper, ListWrapper, Table } from './OrderForm.styled';
+import { Container, GroupLabel, ItemsWrapper, ListWrapper, Table, ButtonStyled } from './OrderForm.styled';
 import { Button, ButtonVariant } from '../../../components/Button';
 import { createUpdateOrder, fetchItems, fetchTables } from '../../../api';
 import { IItem, IOrder, ITable, TagIds } from '../../../types/types';
 import { useHistory } from 'react-router-dom';
-import { ButtonStyled } from '../ItemsList/ItemsList.styled';
 
 interface IItemsList {
   foods: IItem[],
@@ -86,17 +85,18 @@ export const OrderForm: FC<{ order?: IOrder }> = ({ order = EmptyOrder}) => {
   
   return (
     <Container>
-      <Button 
+      <ButtonStyled 
         variant={ButtonVariant.Primary} 
         active 
         disabled={!isOrderValid}
         onClick={handleSave}
       >
         Salvar
-      </Button>
+      </ButtonStyled>
       <ButtonStyled
         variant={ButtonVariant.Primary} 
         onClick={() => push('/')}
+        addBorder
       >
         Voltar
       </ButtonStyled>
