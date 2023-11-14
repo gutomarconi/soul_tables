@@ -1,18 +1,19 @@
 import axios from "axios";
-import { TagIds } from '../types/types';
+import { IItem, TagIds } from '../types/types';
 
-export const fetchItems = async (idTag: TagIds) => {
-  const token = process.env.API_TOKEN;
-  const baseDomain = process.env.BACKEND_API_DOMAIN;
+export const fetchItems = async (idTag: TagIds): Promise<IItem[]> => {
+  const baseDomain = process.env.BACKEND_API_DOMAIN || '';
   const productApi = 'produtos.pesquisa.php';
-  const url = `${baseDomain}${productApi}?formato=json&token=${token}&idTag=${idTag}`;
 
-  const { data } = await axios.post(url, undefined, { 
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    }
+  const { data } = await axios.post(baseDomain, {
+    endpoint: productApi,
+    params: `idTag=${idTag}`
   });
 
-  console.log(data);
-
+  return data.produtos.map(({ produto: { id, nome, preco }}: { produto: { id: number, nome: string, preco: number }}) => ({
+    id,
+    price: preco,
+    label: nome,
+    quantity: 0,
+  }));
 }

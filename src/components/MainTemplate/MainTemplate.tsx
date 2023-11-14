@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import { Content, Wrapper } from './MainTemplate.styled';
-import { TopBar } from '../TopBar';
 import { PageContainer } from '../PageContainer/PageContainer';
 import { SideBar } from '../SideBar';
 
@@ -12,9 +11,8 @@ export const MainTemplate: React.FC<IMainTemplateProps> = ({ children }) => {
   return (
     <Wrapper>
       <Content>
-        <SideBar />
+        {/* <SideBar /> */}
         <PageContainer>
-          <TopBar />
           {children}
         </PageContainer>
       </Content>

@@ -1,58 +1,119 @@
 import { FormControl, FormGroup, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { ItemsList } from '../ItemsList';
 import { Container, GroupLabel, ItemsWrapper, ListWrapper, Table } from './OrderForm.styled';
 import { Button, ButtonVariant } from '../../../components/Button';
+import { createUpdateOrder, fetchItems, fetchTables } from '../../../api';
+import { IItem, IOrder, ITable, TagIds } from '../../../types/types';
+import { useHistory } from 'react-router-dom';
+import { ButtonStyled } from '../ItemsList/ItemsList.styled';
 
-const TablesOptions = [
-  { label: 'Mesa 1', value: 'Mesa 1' },
-  { label: 'Mesa 2', value: 'Mesa 2' },
-  { label: 'Mesa 3', value: 'Mesa 3' },
-  { label: 'Mesa 4', value: 'Mesa 4' },
-  { label: 'Mesa 5', value: 'Mesa 5' },
-  { label: 'Mesa 6', value: 'Mesa 6' },
-];
+interface IItemsList {
+  foods: IItem[],
+  drinks: IItem[],
+  extras: IItem[],
+  tables: ITable[],
+}
 
-const Food = [{ name: 'sandwich', value: 20 }, { name:'biscone', value: 10 }, { name: 'pao de queijo', value: 7 }, { name: 'croissant', value: 15 }];
-const Drink = [{ name: 'espresso', value: 20 }, { name:'cappucino', value: 10 }, { name: 'kombucha', value: 7 }, { name: 'water', value: 15 }];
-const Extra = [{ name: 'chantily', value: 5 }, { name: 'leite espeicial', value: 2.5 }];
-
-const OptionGroups = [
-  {
-    label: 'Comidas',
-    items: Food,
-  },
-  {
-    label: 'Bebidas',
-    items: Drink,
-  },
-  { 
-    label: 'Adicionais',
-    items: Extra
+const EmptyOrder = {
+  items: [],
+  table: {
+    id: 0,
+    label: '',
   }
-]
+};
 
-export const OrderForm: FC<{ order?: any }> = ({ order }) => {
-  const [table, setTable] = React.useState('');
+export const OrderForm: FC<{ order?: IOrder }> = ({ order = EmptyOrder}) => {
+  const { push } = useHistory();
+  const [currentOrder, setCurrentOrder] = useState<IOrder>(order);
+  const [itemsList, setItemsList] = useState<IItemsList>({
+    foods: [],
+    drinks: [],
+    extras: [],
+    tables: []
+  });
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setTable(event.target.value as string);
+  useEffect(() => setCurrentOrder(order) , [order])
+
+  const handleTableChange = (event: SelectChangeEvent<ITable>) => {
+    setCurrentOrder(v => ({
+      ...v,
+      table: { ...event.target.value as ITable }
+    }))
   };
+
+  const handleItemsChange = (item: IItem, checked: boolean) => {
+    var newItems = [...currentOrder.items];
+    if (checked) newItems.push(item)
+    else newItems = newItems.filter(({ id }) => item.id !== id);
+    setCurrentOrder(v => ({
+      ...v,
+      items:[ ...newItems]
+    }))
+  }
+
+  const handleSave = async () => {
+    const response = await createUpdateOrder(currentOrder);
+    if (response === 'OK') push('/');
+  }
+
+  useEffect(() => {
+    (async () => {
+      const [foods, drinks, extras, tables] = await Promise.all([
+        fetchItems(TagIds.Food),
+        fetchItems(TagIds.Drink),
+        fetchItems(TagIds.Extra),
+        fetchTables()
+      ]);
+      setItemsList({
+        foods,
+        drinks,
+        extras,
+        tables
+      })
+    })();
+  }, []);
+
+  const { foods, drinks, extras, tables } = itemsList;
+  const OptionGroups = [
+    { label: 'Comidas', items: foods },
+    { label: 'Bebidas', items: drinks },
+    { label: 'Adicionais', items: extras }
+  ]
+
+  const { items: currentItems, table } = currentOrder;
+  const isOrderValid = currentItems.length > 0 && !!table.id;
   
   return (
     <Container>
+      <Button 
+        variant={ButtonVariant.Primary} 
+        active 
+        disabled={!isOrderValid}
+        onClick={handleSave}
+      >
+        Salvar
+      </Button>
+      <ButtonStyled
+        variant={ButtonVariant.Primary} 
+        onClick={() => push('/')}
+      >
+        Voltar
+      </ButtonStyled>
       <Table>
         <FormControl fullWidth>
           <InputLabel id="table-select-label">Mesa</InputLabel>
-          <Select
+          <Select<ITable>
             labelId="table-select-label"
             id="mesa-select"
             value={table}
+            renderValue={(value) => value.label}
             label="Age"
-            onChange={handleChange}
+            onChange={handleTableChange}
           >
-            {TablesOptions.map(mesa => (
-              <MenuItem key={mesa.label} value={mesa.value}>{mesa.label}</MenuItem>  
+            {tables.map(table => (
+              //@ts-ignore
+              <MenuItem key={table.label} value={table}>{table.label}</MenuItem>  
             ))}
           </Select>
         </FormControl>
@@ -62,15 +123,14 @@ export const OrderForm: FC<{ order?: any }> = ({ order }) => {
           <ListWrapper key={label}>
             <GroupLabel>{label}</GroupLabel>
             <FormGroup>
-              {items.map(item => <ItemsList {...item} />) }
+              {items.map(item => {
+                const currentItem = currentItems.find(currentItem => currentItem.id === item.id);
+                return <ItemsList item={!!currentItem ? currentItem : item} onChange={(item, checked) => handleItemsChange(item, checked)} checked={!!currentItem} />
+              })}
             </FormGroup>
           </ListWrapper>
         ))}
-        <ListWrapper>
-          <Button variant={ButtonVariant.Primary} active>Salvar</Button>
-        </ListWrapper>
       </ItemsWrapper>
     </Container>
-
   )
 }

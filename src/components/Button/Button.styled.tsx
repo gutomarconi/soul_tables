@@ -23,6 +23,7 @@ const DisabledButton = css`
 `;
 
 const PrimaryButton = css<IButtonProps>`
+  border: 1px solid ${({ theme }) => theme.colors.brand.primary};
   &:hover {
     background: ${({ theme }) => theme.colors.brand.primary};
     color: white;
