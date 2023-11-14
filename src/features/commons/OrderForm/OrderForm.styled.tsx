@@ -18,7 +18,7 @@ export const ItemsWrapper = styled.div`
 export const ListWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin-right: 32px;
+  margin-right: 24px;
   :last-child {
     margin-right: 0;
   }
