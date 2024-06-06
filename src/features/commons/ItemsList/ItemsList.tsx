@@ -14,7 +14,7 @@ export const ItemsList: FC<{ item: IItem, onChange: (item: IItem, checked: boole
           <Checkbox 
             checked={checked}  
             onChange={(event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-              onChange({ ...item, quantity: checked ? 1 : 0 }, checked)
+              onChange({ ...item }, checked)
             }} 
           />} 
         label={item.label} 

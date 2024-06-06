@@ -16,9 +16,6 @@
   ],
   "author": "Gustavo Marconi",
   "license": "ISC",
-  "engines": {
-    "node": "20.9.0"
-  },
   "dependencies": {
     "-": "^0.0.1",
     "@emotion/react": "^11.11.1",
