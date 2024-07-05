@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { useAuth } from 'oidc-react';
 import { Redirect } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
 import { REDIRECT_KEY } from '../../constants';
 import { getRedirect } from '../../utils'
 import { UserProfile } from 'oidc-client-ts';
