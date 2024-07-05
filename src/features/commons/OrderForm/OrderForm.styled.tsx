@@ -8,6 +8,7 @@ export const Container = styled.div`
 
 export const Table = styled.div`
   margin-bottom: 24px;
+  width: -webkit-fill-available;
 `;
 
 export const ItemsWrapper = styled.div`
@@ -38,8 +39,13 @@ export const ButtonStyled = styled(Button)<{ margin?: string, addBorder?: boolea
   ${({ addBorder, theme }) => addBorder && css`
     border: 1px solid ${theme.colors.brand.primary};
   `}
-  // ${({ margin }) => margin && css`
-  //   margin: ${margin};
-  // `}
   margin-bottom: 24px;
+  width: 200px;
+`;
+
+export const LoadingWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-top: 40px;
 `;

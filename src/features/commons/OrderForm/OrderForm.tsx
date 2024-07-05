@@ -1,11 +1,12 @@
 import { FormControl, FormGroup, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import React, { FC, useEffect, useState } from 'react';
 import { ItemsList } from '../ItemsList';
-import { Container, GroupLabel, ItemsWrapper, ListWrapper, Table, ButtonStyled } from './OrderForm.styled';
+import { Container, GroupLabel, ItemsWrapper, ListWrapper, Table, ButtonStyled, LoadingWrapper } from './OrderForm.styled';
 import { Button, ButtonVariant } from '../../../components/Button';
 import { createUpdateOrder, fetchItems, fetchTables } from '../../../api';
 import { IItem, IOrder, ITable, TagIds } from '../../../types/types';
 import { useHistory } from 'react-router-dom';
+import { Loading } from '../../../components/Loading';
 
 interface IItemsList {
   foods: IItem[],
@@ -15,6 +16,7 @@ interface IItemsList {
 }
 
 const EmptyOrder = {
+  id: 0,
   items: [],
   table: {
     id: 0,
@@ -25,6 +27,7 @@ const EmptyOrder = {
 export const OrderForm: FC<{ order?: IOrder }> = ({ order = EmptyOrder}) => {
   const { push } = useHistory();
   const [currentOrder, setCurrentOrder] = useState<IOrder>(order);
+  const [isLoading, setIsLoading] = useState(false);
   const [itemsList, setItemsList] = useState<IItemsList>({
     foods: [],
     drinks: [],
@@ -42,8 +45,12 @@ export const OrderForm: FC<{ order?: IOrder }> = ({ order = EmptyOrder}) => {
   };
 
   const handleItemsChange = (item: IItem, checked: boolean) => {
-    var newItems = [...currentOrder.items];
-    if (checked) newItems.push(item)
+    let newItems = [...currentOrder.items];
+    if (checked) {
+      if (newItems.filter(({ id }) => id === item.id).length === 0) {
+        newItems.push(item)
+      }
+    }
     else newItems = newItems.filter(({ id }) => item.id !== id);
     setCurrentOrder(v => ({
       ...v,
@@ -58,6 +65,7 @@ export const OrderForm: FC<{ order?: IOrder }> = ({ order = EmptyOrder}) => {
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       const [foods, drinks, extras, tables] = await Promise.all([
         fetchItems(TagIds.Food),
         fetchItems(TagIds.Drink),
@@ -70,6 +78,7 @@ export const OrderForm: FC<{ order?: IOrder }> = ({ order = EmptyOrder}) => {
         extras,
         tables
       })
+      setIsLoading(false)
     })();
   }, []);
 
@@ -85,52 +94,58 @@ export const OrderForm: FC<{ order?: IOrder }> = ({ order = EmptyOrder}) => {
   
   return (
     <Container>
-      <ButtonStyled 
-        variant={ButtonVariant.Primary} 
-        active 
-        disabled={!isOrderValid}
-        onClick={handleSave}
-      >
-        Salvar
-      </ButtonStyled>
-      <ButtonStyled
-        variant={ButtonVariant.Primary} 
-        onClick={() => push('/')}
-        addBorder
-      >
-        Voltar
-      </ButtonStyled>
-      <Table>
-        <FormControl fullWidth>
-          <InputLabel id="table-select-label">Mesa</InputLabel>
-          <Select<ITable>
-            labelId="table-select-label"
-            id="mesa-select"
-            value={table}
-            renderValue={(value) => value.label}
-            label="Age"
-            onChange={handleTableChange}
-          >
-            {tables.map(table => (
-              //@ts-ignore
-              <MenuItem key={table.label} value={table}>{table.label}</MenuItem>  
-            ))}
-          </Select>
-        </FormControl>
-      </Table>
-      <ItemsWrapper>
-        {OptionGroups.map(({ label, items }) => (
-          <ListWrapper key={label}>
-            <GroupLabel>{label}</GroupLabel>
-            <FormGroup>
-              {items.map(item => {
-                const currentItem = currentItems.find(currentItem => currentItem.id === item.id);
-                return <ItemsList item={!!currentItem ? currentItem : item} onChange={(item, checked) => handleItemsChange(item, checked)} checked={!!currentItem} />
-              })}
-            </FormGroup>
-          </ListWrapper>
-        ))}
-      </ItemsWrapper>
-    </Container>
+      <div style={{ display: 'flex', gap: '2rem' }}>
+        <Table>
+          <FormControl fullWidth>
+            <InputLabel id="table-select-label">Mesa</InputLabel>
+            <Select<ITable>
+              labelId="table-select-label"
+              id="mesa-select"
+              value={table}
+              renderValue={(value) => value.label}
+              label="Age"
+              disabled={isLoading}
+              onChange={handleTableChange}
+            >
+              {tables.map(table => (
+                //@ts-ignore
+                <MenuItem key={table.label} value={table}>{table.label}</MenuItem>  
+              ))}
+            </Select>
+          </FormControl>
+        </Table>
+        <ButtonStyled 
+          variant={ButtonVariant.Primary} 
+          active 
+          disabled={!isOrderValid}
+          addBorder
+          onClick={handleSave}
+        >
+          Salvar
+        </ButtonStyled>
+        <ButtonStyled
+          variant={ButtonVariant.Primary} 
+          onClick={() => push('/')}
+          addBorder
+        >
+          Voltar
+        </ButtonStyled>
+      </div>
+      {isLoading ? <LoadingWrapper><Loading /></LoadingWrapper> : (
+        <ItemsWrapper>
+          {OptionGroups.map(({ label, items }) => (
+            <ListWrapper key={label}>
+              <GroupLabel>{label}</GroupLabel>
+              <FormGroup>
+                {items.map(item => {
+                  const currentItem = currentItems.find(currentItem => currentItem.id === item.id);
+                  return <ItemsList item={!!currentItem ? currentItem : item} onChange={(item, checked) => handleItemsChange(item, checked)} checked={!!currentItem} />
+                })}
+              </FormGroup>
+            </ListWrapper>
+          ))}
+        </ItemsWrapper>
+      )}
+      </Container>
   )
 }

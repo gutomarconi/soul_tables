@@ -17,7 +17,7 @@ const animation = keyframes`
 export const Dot = styled.div`
 width: 10px;
   height: 10px;
-  background-color: ${({ theme }) => theme.colors.text.primary};
+  background-color: ${({ theme }) => theme.colors.brand.primary};
   border-radius: 50%;
   margin: 0 5px;
   animation: ${animation} 1s infinite ease-in-out;

@@ -29,6 +29,7 @@ const htmlParserPlugin = {
   name: 'htmlParser',
   setup(build) {
     build.onEnd(async () => {
+      const logo = await fse.readFile('./src/theme/theme/assets/soul.jpg');
       const html = await fse.readFile('./src/index.html', 'utf-8')
       const root = parse(html);
       const body = root.querySelector('body');
@@ -36,6 +37,7 @@ const htmlParserPlugin = {
       body.insertAdjacentHTML('beforeend', `<script src="/${moduleName}"></script>`);
 
       await fse.outputFile('./build/index.html', root.toString())
+      await fse.outputFile('./build/soul.jpg', logo)
     })
   }
 }

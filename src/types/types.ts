@@ -10,7 +10,8 @@ export const TABLES_IDENTIFIER = 'mesa';
 
 export interface IOrder {
   table: ITable,
-  items: IItem[]
+  items: IItem[],
+  id: number,
 }
 export interface IPendingOrders {
   table: string,

@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Container, TablesContainer } from './PendingOrdersContainer.styled';
+import { Container, NoOrders, TablesContainer } from './PendingOrdersContainer.styled';
 import { Card } from './components/Card';
 import { fetchOrders } from '../../api/orders';
 import { IPendingOrders } from '../../types/types';
@@ -21,11 +21,15 @@ export const PendingOrdersContainer: FC = () => {
       <Button variant={ButtonVariant.Primary} icon='Plus' iconBefore onClick={() => push('/order/create') }>
         Nova Mesa
       </Button>
-      <TablesContainer>
-        {pendingOrders.map(table => (
-          <Card key={table.table} {...table} />
-        ))}
-      </TablesContainer>
-    </Container>
+      {pendingOrders.length === 0 ? (
+        <NoOrders>Nenhuma mesa em aberto no momento</NoOrders>
+      ) : (
+        <TablesContainer>
+          {pendingOrders.map(table => (
+            <Card key={table.table} {...table} />
+          ))}
+        </TablesContainer>
+      )}
+      </Container>
   )
 }

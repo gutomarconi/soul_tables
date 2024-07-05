@@ -4,11 +4,11 @@ import { TagIds } from '../../types/types';
 import { OrderForm } from '../commons/OrderForm';
 
 export const NewOrderContainer: FC = () => {
-  useEffect(() => {
-    (async () => {
-      await fetchItems(TagIds.Food);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     await fetchItems(TagIds.Food);
+  //   })();
+  // }, []);
 
   return (
     <div>

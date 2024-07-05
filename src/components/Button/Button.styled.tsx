@@ -29,7 +29,7 @@ const PrimaryButton = css<IButtonProps>`
     color: white;
   }
   ${({ $isActive, theme }) => $isActive && css`
-    background: ${theme.colors.brand.secondary};
+    background: ${theme.colors.brand.primary};
     color: white;
   `}
 `;

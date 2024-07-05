@@ -7,7 +7,7 @@ export const fetchOrders = async (): Promise<IPendingOrders[]> => {
 
   const { data } = await axios.post(baseDomain, {
     endpoint: productApi,
-    params: `marcador=${PDV_MARKER}`
+    params: `marcador=${PDV_MARKER}&situacao=aberto`
   });
   if (data.status === 'Erro') return [];
   return data.pedidos.map(({ pedido: { nome, id, valor } }: { pedido: { nome: string; id: number; valor: number; } }) => ({
@@ -15,6 +15,16 @@ export const fetchOrders = async (): Promise<IPendingOrders[]> => {
     id: id,
     total: valor,
   }));
+}
+
+export const cancelOrder = async (id: number) => {
+  const baseDomain = process.env.BACKEND_API_DOMAIN || '';
+  const productApi = 'pedido.alterar.situacao';
+
+  const { data } = await axios.post(baseDomain, {
+    endpoint: productApi,
+    params: `id=${id}&situacao=cancelado`
+  });
 }
 
 export const getOrder = async (id: number): Promise<IOrder> => {
@@ -40,13 +50,18 @@ export const getOrder = async (id: number): Promise<IOrder> => {
       id: contato.codigo,
       label: contato.nome, 
     },
-    items
+    items,
+    id
   };
 }
 
 export const createUpdateOrder = async (order: IOrder) => {
   const baseDomain = process.env.BACKEND_API_DOMAIN || '';
   const productApi = 'pedido.incluir.php';
+
+  if (order.id) {
+    await cancelOrder(order.id);
+  }
 
   const items = order.items.map(item => ({
     item: {
